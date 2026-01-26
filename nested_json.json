@@ -1,0 +1,59 @@
+{
+  "status": "success",
+  "metadata": {
+    "generated_at": "2026-01-26T19:05:31Z",
+    "request_id": "req-99x-8822",
+    "version": "v2.1"
+  },
+  "data": {
+    "user": {
+      "id": 501,
+      "username": "dev_guru_2026",
+      "is_active": true,
+      "profile": {
+        "first_name": "Abhishek",
+        "last_name": "Singh",
+        "contact": {
+          "email": "abhishek@example.cloud",
+          "phones": [
+            { "type": "mobile", "number": "+91-98765-43210", "primary": true },
+            { "type": "work", "number": "+91-11-2345-6789", "primary": false }
+          ]
+        },
+        "addresses": [
+          {
+            "label": "Home",
+            "street": "123 Tech Park Lane",
+            "city": "Hyderabad",
+            "geo": {
+              "lat": 17.3850,
+              "lng": 78.4867
+            }
+          }
+        ]
+      }
+    },
+    "recent_orders": [
+      {
+        "order_id": "ORD-7721",
+        "date": "2026-01-20",
+        "total": 149.99,
+        "currency": "USD",
+        "items": [
+          {
+            "product_id": "P-101",
+            "name": "Mechanical Keyboard",
+            "quantity": 1,
+            "specs": { "switch_type": "Cherry MX Blue", "backlight": "RGB" }
+          },
+          {
+            "product_id": "P-205",
+            "name": "USB-C Cable",
+            "quantity": 2,
+            "specs": { "length": "2m", "braided": true }
+          }
+        ]
+      }
+    ]
+  }
+}
