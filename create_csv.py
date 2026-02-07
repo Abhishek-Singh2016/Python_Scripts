@@ -16,6 +16,7 @@ def create_csv_from_json(json_file, csv_file):
         # Write data rows
         for entry in data:
             writer.writerow(entry.values())
+            
 
         
 

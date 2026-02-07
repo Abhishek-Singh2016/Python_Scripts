@@ -1,0 +1,4 @@
+id,name,type,status
+i-01,web-server,t3.medium,running
+i-02,db-server,r5.large,stopped
+i-03,lb-server,t2.small,running

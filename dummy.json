@@ -1,0 +1,5 @@
+[
+    {"id": "i-01", "name": "web-server", "type": "t3.medium", "status": "running"},
+    {"id": "i-02", "name": "db-server", "type": "r5.large", "status": "stopped"},
+    {"id": "i-03", "name": "lb-server", "type": "t2.small", "status": "running"}
+]
