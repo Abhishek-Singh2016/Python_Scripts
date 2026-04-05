@@ -31,7 +31,29 @@ def stop_instance_safely(instance_id, region='us-east-1'):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+
+def create_instance(instance_type='t2.micro', region='us-east-1'):
+    ec2 = boto3.client('ec2', region_name=region)
+    try:
+        print(f"Creating instance of type {instance_type} in {region}...")
+        response = ec2.run_instances(
+            ImageId='ami-0abcdef1234567890',  # Replace with a valid AMI ID
+            InstanceType=instance_type,
+            MinCount=1,
+            MaxCount=1
+        )
+        instance_id = response['Instances'][0]['InstanceId']
+        print(f"Instance created with ID: {instance_id}")
+        return instance_id
+    except ClientError as e:
+        print(f"Failed to create instance: {e}")
+    except EndpointConnectionError:
+        print("Network Error: Could not connect to the AWS endpoint. Check your internet/VPN.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 if __name__ == "__main__":
     # Replace with your actual instance ID
     ID_TO_STOP = 'i-0abcd1234efgh5678'
     stop_instance_safely(ID_TO_STOP)
+    create_instance()
