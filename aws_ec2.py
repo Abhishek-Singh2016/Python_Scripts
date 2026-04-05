@@ -37,13 +37,21 @@ def create_instance(instance_type='t2.micro', region='us-east-1'):
     try:
         print(f"Creating instance of type {instance_type} in {region}...")
         response = ec2.run_instances(
-            ImageId='ami-0abcdef1234567890',  # Replace with a valid AMI ID
+            ImageId=select_ami_id(region),  # Replace with a valid AMI ID
             InstanceType=instance_type,
             MinCount=1,
             MaxCount=1
         )
         instance_id = response['Instances'][0]['InstanceId']
+        #ec2.get_waiter('instance_running').wait(InstanceIds=[response['Instances'][0]['InstanceId']])
+        # Get the specific waiter
+        waiter = ec2.get_waiter('instance_running')
+        print("Waiting for instance to start...")
+        # Polls every 15 seconds by default
+        waiter.wait(InstanceIds=[instance_id])
+        
         print(f"Instance created with ID: {instance_id}")
+        print(response)
         return instance_id
     except ClientError as e:
         print(f"Failed to create instance: {e}")
@@ -52,8 +60,37 @@ def create_instance(instance_type='t2.micro', region='us-east-1'):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+def select_ami_id(region):
+    # This function would ideally query AWS for the latest AMI ID based on region and other criteria
+    # For demonstration, we return a placeholder AMI ID
+    ami_ids = {
+        'us-east-1': 'ami-0ec10929233384c7f',
+        'us-west-2': 'ami-0fedcba9876543210'
+    }
+    return ami_ids.get(region, 'ami-0abcdef1234567890')  # Default to a known AMI if region not found
+
+def ec2_terminate_instance(instance_id, region='us-east-1'):
+    ec2 = boto3.client('ec2', region_name=region)
+    try:
+        instances = ec2.instances.filter(
+        Filters=[{'Values': ['running', 'stopped']}])
+        for instance in instances:
+            print(instance.id, instance.instance_type)
+            print(f"Terminating instance: {instance_id}...")
+            response = ec2.terminate_instances(InstanceIds=[instance_id])
+            print(f"Termination initiated. Current State: {response['TerminatingInstances'][0]['CurrentState']['Name']}")
+            ec2.get_waiter('instance_terminated').wait(InstanceIds=[instance_id])
+            print(f"Instance {instance_id} has been terminated.")
+    except ClientError as e:
+        print(f"Failed to terminate instance: {e}")
+    except EndpointConnectionError:
+        print("Network Error: Could not connect to the AWS endpoint. Check your internet/VPN.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}") 
+
+
 if __name__ == "__main__":
     # Replace with your actual instance ID
     ID_TO_STOP = 'i-0abcd1234efgh5678'
-    stop_instance_safely(ID_TO_STOP)
-    create_instance()
+    stop_instance_safely(create_instance())
+    ec2_terminate_instance()
